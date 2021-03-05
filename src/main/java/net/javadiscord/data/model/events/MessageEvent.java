@@ -15,6 +15,8 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class MessageEvent extends GuildEvent {
+	private static final int PREFIX_LENGTH = 6;
+
 	public enum EventType {CREATE, UPDATE, DELETE}
 
 	@Column(nullable = false)
@@ -26,14 +28,18 @@ public class MessageEvent extends GuildEvent {
 	@Column
 	private Integer messageLength;
 
+	@Column(length = 64)
+	private String prefix;
+
 	@Enumerated(EnumType.STRING)
 	private EventType eventType;
 
-	public MessageEvent(Long guildId, Long userId, Long channelId, Long messageId, Integer messageLength, EventType eventType) {
+	public MessageEvent(Long guildId, Long userId, Long channelId, Long messageId, Integer messageLength, String prefix, EventType eventType) {
 		super(guildId, userId);
 		this.channelId = channelId;
 		this.messageId = messageId;
 		this.messageLength = messageLength;
+		this.prefix = prefix;
 		this.eventType = eventType;
 	}
 
@@ -44,6 +50,7 @@ public class MessageEvent extends GuildEvent {
 			createEvent.getMessage().getChannelId().asLong(),
 			createEvent.getMessage().getId().asLong(),
 			createEvent.getMessage().getContent().length(),
+			createEvent.getMessage().getContent().substring(0, Math.min(createEvent.getMessage().getContent().length(), PREFIX_LENGTH)),
 			EventType.CREATE
 		);
 	}
@@ -55,6 +62,7 @@ public class MessageEvent extends GuildEvent {
 			updateEvent.getChannelId().asLong(),
 			updateEvent.getMessageId().asLong(),
 			null,
+			null,
 			EventType.UPDATE
 		);
 	}
@@ -65,6 +73,7 @@ public class MessageEvent extends GuildEvent {
 			null,
 			deleteEvent.getChannelId().asLong(),
 			deleteEvent.getMessageId().asLong(),
+			null,
 			null,
 			EventType.DELETE
 		);
