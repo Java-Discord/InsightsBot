@@ -1,7 +1,6 @@
 package net.javadiscord.data.dao;
 
 import net.javadiscord.data.model.BaseEntity;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -9,6 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * DAO of a model which extends from that superclass.
  * @param <T> The root entity type.
  */
-@ConditionalOnExpression("false")
 public interface BaseEntityRepository<T extends BaseEntity> extends JpaRepository<T, Long> {
 }

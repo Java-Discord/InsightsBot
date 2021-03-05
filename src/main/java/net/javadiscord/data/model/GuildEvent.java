@@ -40,6 +40,7 @@ public class GuildEvent extends BaseEntity {
 	 * The time at which this event happened.
 	 */
 	@CreationTimestamp
+	@Column(updatable = false)
 	private Instant timestamp;
 
 	public GuildEvent(Long guildId, Long userId, Long channelId) {
