@@ -17,6 +17,10 @@ import reactor.core.publisher.Mono;
 
 import static net.javadiscord.InsightsBot.PREFIX;
 
+/**
+ * Service that is responsible for recording data about events, and is the main
+ * event handler for the Discord bot.
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -27,6 +31,7 @@ public class GuildEventRecorderService extends ReactiveEventAdapter {
 	@Override
 	public Publisher<?> onMessageCreate(MessageCreateEvent event) {
 		if (event.getGuildId().isPresent() && event.getMember().isPresent()) {
+			// Check if a command for the bot itself was issued, and process that instead.
 			if (event.getMessage().getContent().toLowerCase().startsWith(PREFIX)) {
 				return this.commandHandler.handle(event);
 			}
