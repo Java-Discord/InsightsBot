@@ -4,6 +4,9 @@ import discord4j.core.DiscordClientBuilder;
 import discord4j.core.object.entity.Guild;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.javadiscord.command.CommandRegistry;
+import net.javadiscord.command.HelpCommand;
+import net.javadiscord.command.MessageCountCommand;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +22,24 @@ import java.util.stream.Collectors;
 @Slf4j
 public class BotInitializer implements CommandLineRunner {
 	private final GuildEventRecorderService recorderService;
+	private final CommandRegistry commandRegistry;
+
+	// Autowired commands (which require persistence components)
+	private final MessageCountCommand messageCountCommand;
 
 	@Override
 	public void run(String... args) {
 		if (args.length < 1 || args[0].isBlank()) throw new IllegalArgumentException("Missing client token argument.");
+		this.initializeCommands();
 		this.initializeBot(args[0]);
+	}
+
+	/**
+	 * Initializes the various commands that can be executed.
+	 */
+	private void initializeCommands() {
+		this.commandRegistry.register("help", new HelpCommand());
+		this.commandRegistry.register("messageCount", this.messageCountCommand);
 	}
 
 	/**
