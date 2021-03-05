@@ -5,9 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.Instant;
 
 /**
@@ -16,6 +14,7 @@ import java.time.Instant;
  */
 @Entity
 @Table(name = "guild_events")
+@Inheritance(strategy = InheritanceType.JOINED)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GuildEvent extends BaseEntity {
@@ -32,20 +31,15 @@ public class GuildEvent extends BaseEntity {
 	private Long userId;
 
 	/**
-	 * The id (snowflake) of the channel where this event happened.
-	 */
-	private Long channelId;
-
-	/**
 	 * The time at which this event happened.
 	 */
 	@CreationTimestamp
 	@Column(updatable = false)
 	private Instant timestamp;
 
-	public GuildEvent(Long guildId, Long userId, Long channelId) {
+	public GuildEvent(Long guildId, Long userId) {
 		this.guildId = guildId;
 		this.userId = userId;
-		this.channelId = channelId;
+		this.timestamp = Instant.now();
 	}
 }
