@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication
 public class InsightsBot {
+	public static final String PREFIX = "!ib";
 	/**
 	 * Starts the application.
 	 * <p>

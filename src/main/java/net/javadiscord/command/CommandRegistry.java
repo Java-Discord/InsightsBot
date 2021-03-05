@@ -6,6 +6,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Registry that keeps track of a string-indexed map of commands. Each command
+ * is registered with a lowercase keyword.
+ */
 @Component
 public class CommandRegistry {
 	private final Map<String, Command> commandMap;

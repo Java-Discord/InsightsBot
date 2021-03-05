@@ -6,6 +6,10 @@ import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 
+/**
+ * Command that's called when an unknown keyword is entered following the bot's
+ * prefix.
+ */
 public class UnknownCommand implements Command {
 	@Override
 	public Publisher<?> handle(MessageCreateEvent event, String[] args) {

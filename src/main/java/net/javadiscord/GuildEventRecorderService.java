@@ -15,12 +15,12 @@ import org.reactivestreams.Publisher;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import static net.javadiscord.InsightsBot.PREFIX;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class GuildEventRecorderService extends ReactiveEventAdapter {
-	public static final String PREFIX = "!ib";
-
 	private final GuildEventRepository guildEventRepository;
 	private final CommandHandler commandHandler;
 
