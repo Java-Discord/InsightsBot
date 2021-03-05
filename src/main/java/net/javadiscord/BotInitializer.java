@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javadiscord.command.CommandRegistry;
 import net.javadiscord.command.HelpCommand;
-import net.javadiscord.command.MessageCountCommand;
+import net.javadiscord.command.analytics.MessageCountCommand;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 

@@ -1,7 +1,8 @@
-package net.javadiscord.command;
+package net.javadiscord.command.analytics;
 
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import lombok.RequiredArgsConstructor;
+import net.javadiscord.command.Command;
 import net.javadiscord.data.dao.MessageEventRepository;
 import net.javadiscord.data.model.events.MessageEvent;
 import org.reactivestreams.Publisher;
