@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javadiscord.command.CommandRegistry;
 import net.javadiscord.command.HelpCommand;
+import net.javadiscord.command.analytics.JoinCountCommand;
 import net.javadiscord.command.analytics.MessageCountCommand;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ public class BotInitializer implements CommandLineRunner {
 
 	// Autowired commands (which require persistence components)
 	private final MessageCountCommand messageCountCommand;
+	private final JoinCountCommand joinCountCommand;
 
 	@Override
 	public void run(String... args) {
@@ -40,6 +42,7 @@ public class BotInitializer implements CommandLineRunner {
 	private void initializeCommands() {
 		this.commandRegistry.register("help", new HelpCommand());
 		this.commandRegistry.register("messageCount", this.messageCountCommand);
+		this.commandRegistry.register("joinCount", this.joinCountCommand);
 	}
 
 	/**

@@ -13,28 +13,24 @@ import java.sql.PreparedStatement;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class MessageCountCommand extends GuildSpecificCommand {
+public class JoinCountCommand extends GuildSpecificCommand {
 	private final JdbcTemplate jdbcTemplate;
 	private final TemporalExpressionParser temporalExpressionParser;
 
 	@Override
-	protected Publisher<?> handle(MessageCreateEvent event, long guildId, String[] args) {
+	public Publisher<?> handle(MessageCreateEvent event, long guildId, String[] args) {
 		Pair<LocalDateTime, LocalDateTime> range = this.temporalExpressionParser.parse(args, Duration.ofDays(365));
 		final String start = range.getFirst().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 		final String end = range.getSecond().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-		Long[] userBlacklist = new Long[]{event.getClient().getSelfId().asLong()};
 
 		Long count = this.jdbcTemplate.query(connection -> {
-			PreparedStatement stmt = connection.prepareStatement(SqlHelper.load("sql/count_messages.sql"));
+			PreparedStatement stmt = connection.prepareStatement(SqlHelper.load("sql/count_joins.sql"));
 			stmt.setLong(1, guildId);
-			stmt.setString(2, Arrays.stream(userBlacklist).map(Object::toString).collect(Collectors.joining(", ")));
-			stmt.setString(3, start);
-			stmt.setString(4, end);
+			stmt.setString(2, start);
+			stmt.setString(3, end);
 			return stmt;
 		}, resultSet -> {
 			if (resultSet.next()) {
@@ -43,7 +39,7 @@ public class MessageCountCommand extends GuildSpecificCommand {
 			return null;
 		});
 		return event.getMessage().getChannel().flatMap(c -> c.createMessage(
-				String.format("%d messages have been sent in this guild from %s to %s.", count, start, end)
+				String.format("%d members have joined this guild from %s to %s.", count, start, end)
 		));
 	}
 }

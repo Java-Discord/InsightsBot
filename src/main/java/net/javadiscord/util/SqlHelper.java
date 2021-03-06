@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-public class SqlScriptHelper {
+public class SqlHelper {
 	public static String load(String resourceName) {
-		InputStream is = SqlScriptHelper.class.getClassLoader().getResourceAsStream(resourceName);
+		InputStream is = SqlHelper.class.getClassLoader().getResourceAsStream(resourceName);
 		if (is == null) {
 			return null;
 		}
