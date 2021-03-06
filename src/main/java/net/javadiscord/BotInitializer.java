@@ -57,7 +57,7 @@ public class BotInitializer implements CommandLineRunner {
 	private void initializeBot(String token) {
 		final GatewayDiscordClient client = DiscordClientBuilder.create(token).build()
 				.login()
-				.block(Duration.ofSeconds(5));
+				.block(Duration.ofSeconds(60));
 		if (client == null) {
 			throw new RuntimeException("Could not build client and login.");
 		}
