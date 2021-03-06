@@ -2,11 +2,13 @@ package net.javadiscord;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * Main application entry point.
  */
 @SpringBootApplication
+@EnableScheduling
 public class InsightsBot {
 	public static final String PREFIX = "!ib";
 	/**
