@@ -46,7 +46,7 @@ public class BotInitializer implements CommandLineRunner {
 		this.commandRegistry.register("help", new HelpCommand());
 		this.commandRegistry.register("messageCount", this.messageCountCommand);
 		this.commandRegistry.register("joinCount", this.joinCountCommand);
-		this.commandRegistry.register("customQuery", this.customQueryCommand);
+		//this.commandRegistry.register("customQuery", this.customQueryCommand);
 	}
 
 	/**
