@@ -1,4 +1,4 @@
-package net.javadiscord;
+package net.javadiscord.data;
 
 import discord4j.core.event.ReactiveEventAdapter;
 import discord4j.core.event.domain.guild.MemberJoinEvent;
