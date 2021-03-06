@@ -5,7 +5,7 @@ Discord bot for recording and analyzing user engagement, retention, and more.
 
 Use this URL to add the bot to your server:
 
-https://discord.com/api/oauth2/authorize?client_id=817184789319647293&permissions=650304&redirect_uri=https%3A%2F%2Fjavadiscord.net&response_type=code&scope=bot%20messages.read
+https://discord.com/api/oauth2/authorize?client_id=817842720848347137&permissions=650304&redirect_uri=https%3A%2F%2Fjavadiscord.net%2F&response_type=code&scope=bot%20messages.read
 
 ### Configuration
 Currently, the application is only configured for the `development` profile. Please therefore use only `development` as the active profile when running the application.
