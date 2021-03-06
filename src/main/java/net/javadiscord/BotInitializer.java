@@ -1,12 +1,12 @@
 package net.javadiscord;
 
 import discord4j.core.DiscordClientBuilder;
+import discord4j.core.GatewayDiscordClient;
 import discord4j.core.object.entity.Guild;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javadiscord.command.CommandRegistry;
 import net.javadiscord.command.HelpCommand;
-import net.javadiscord.command.analytics.CustomQueryCommand;
 import net.javadiscord.command.analytics.JoinCountCommand;
 import net.javadiscord.command.analytics.MessageCountCommand;
 import net.javadiscord.data.GuildEventRecorderService;
@@ -30,11 +30,11 @@ public class BotInitializer implements CommandLineRunner {
 	// Autowired commands (which require persistence components)
 	private final MessageCountCommand messageCountCommand;
 	private final JoinCountCommand joinCountCommand;
-	private final CustomQueryCommand customQueryCommand;
+	//private final CustomQueryCommand customQueryCommand;
 
 	@Override
 	public void run(String... args) {
-		if (args.length < 1 || args[0].isBlank()) throw new IllegalArgumentException("Missing client token argument.");
+		if (args.length < 1 || args[0].isEmpty()) throw new IllegalArgumentException("Missing client token argument.");
 		this.initializeCommands();
 		this.initializeBot(args[0]);
 	}
@@ -55,7 +55,7 @@ public class BotInitializer implements CommandLineRunner {
 	 * @param token The client token to use to create the bot.
 	 */
 	private void initializeBot(String token) {
-		final var client = DiscordClientBuilder.create(token).build()
+		final GatewayDiscordClient client = DiscordClientBuilder.create(token).build()
 				.login()
 				.block(Duration.ofSeconds(5));
 		if (client == null) {

@@ -7,7 +7,7 @@ import org.reactivestreams.Publisher;
 public abstract class GuildSpecificCommand implements Command {
 	@Override
 	public Publisher<?> handle(MessageCreateEvent event, String[] args) {
-		if (event.getGuildId().isEmpty()) {
+		if (!event.getGuildId().isPresent()) {
 			return event.getMessage().getChannel().flatMap(c -> c.createMessage("Missing guild id."));
 		}
 		return this.handle(event, event.getGuildId().get().asLong(), args);

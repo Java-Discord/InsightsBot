@@ -56,7 +56,7 @@ public class ReactionEvent extends GuildEvent {
 
 	public ReactionEvent(ReactionAddEvent addEvent) {
 		this(
-			addEvent.getGuildId().orElseThrow().asLong(),
+			addEvent.getGuildId().orElseThrow(() -> new RuntimeException("Missing guild id.")).asLong(),
 			addEvent.getUserId().asLong(),
 			addEvent.getChannelId().asLong(),
 			addEvent.getMessageId().asLong(),
@@ -68,7 +68,7 @@ public class ReactionEvent extends GuildEvent {
 
 	public ReactionEvent(ReactionRemoveEvent removeEvent) {
 		this(
-			removeEvent.getGuildId().orElseThrow().asLong(),
+			removeEvent.getGuildId().orElseThrow(() -> new RuntimeException("Missing guild id.")).asLong(),
 			removeEvent.getUserId().asLong(),
 			removeEvent.getChannelId().asLong(),
 			removeEvent.getMessageId().asLong(),

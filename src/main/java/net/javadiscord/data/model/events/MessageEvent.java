@@ -45,8 +45,8 @@ public class MessageEvent extends GuildEvent {
 
 	public MessageEvent(MessageCreateEvent createEvent) {
 		this(
-			createEvent.getGuildId().orElseThrow().asLong(),
-			createEvent.getMember().orElseThrow().getId().asLong(),
+			createEvent.getGuildId().orElseThrow(() -> new RuntimeException("Missing guild id.")).asLong(),
+			createEvent.getMember().orElseThrow(() -> new RuntimeException("Missing member.")).getId().asLong(),
 			createEvent.getMessage().getChannelId().asLong(),
 			createEvent.getMessage().getId().asLong(),
 			createEvent.getMessage().getContent().length(),
@@ -57,7 +57,7 @@ public class MessageEvent extends GuildEvent {
 
 	public MessageEvent(MessageUpdateEvent updateEvent) {
 		this(
-			updateEvent.getGuildId().orElseThrow().asLong(),
+			updateEvent.getGuildId().orElseThrow(() -> new RuntimeException("Missing guild id.")).asLong(),
 			null,
 			updateEvent.getChannelId().asLong(),
 			updateEvent.getMessageId().asLong(),
@@ -69,7 +69,7 @@ public class MessageEvent extends GuildEvent {
 
 	public MessageEvent(MessageDeleteEvent deleteEvent) {
 		this(
-			deleteEvent.getGuildId().orElseThrow().asLong(),
+			deleteEvent.getGuildId().orElseThrow(() -> new RuntimeException("Missing guild id.")).asLong(),
 			null,
 			deleteEvent.getChannelId().asLong(),
 			deleteEvent.getMessageId().asLong(),
