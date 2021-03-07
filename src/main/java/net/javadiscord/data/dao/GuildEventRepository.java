@@ -1,6 +1,6 @@
 package net.javadiscord.data.dao;
 
-import net.javadiscord.data.model.GuildEvent;
+import net.javadiscord.data.model.events.GuildEvent;
 import org.springframework.stereotype.Repository;
 
 @Repository

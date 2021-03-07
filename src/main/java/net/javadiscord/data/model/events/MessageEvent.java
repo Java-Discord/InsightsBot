@@ -6,7 +6,6 @@ import discord4j.core.event.domain.message.MessageUpdateEvent;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import net.javadiscord.data.model.GuildEvent;
 
 import javax.persistence.*;
 

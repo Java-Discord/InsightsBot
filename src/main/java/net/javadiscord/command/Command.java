@@ -2,6 +2,9 @@ package net.javadiscord.command;
 
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import org.reactivestreams.Publisher;
+import org.springframework.lang.Nullable;
+
+import java.util.Set;
 
 /**
  * Commands must simply declare the logic for the {@link Command#handle} method,
@@ -16,4 +19,11 @@ public interface Command {
 	 * handled successfully.
 	 */
 	Publisher<?> handle(MessageCreateEvent event, String[] args);
+
+	/**
+	 * @return A list of ids of users that are allowed to use the command.
+	 */
+	default @Nullable Set<Long> getWhitelistedUserIds() {
+		return null;
+	}
 }

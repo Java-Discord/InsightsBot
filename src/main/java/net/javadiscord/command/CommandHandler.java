@@ -1,10 +1,14 @@
 package net.javadiscord.command;
 
 import discord4j.core.event.domain.message.MessageCreateEvent;
+import discord4j.core.object.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.reactivestreams.Publisher;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
+
+import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * Handles the process of preparing the contents of a command message for use
@@ -28,9 +32,7 @@ public class CommandHandler {
 		if (words.length == 0) {
 			return Mono.empty();
 		}
-		String[] args = new String[words.length - 1];
-		System.arraycopy(words, 1, args, 0, words.length - 1);
-		return this.handle(event, args);
+		return this.handle(event, Arrays.copyOfRange(words, 1, words.length));
 	}
 
 	/**
@@ -43,9 +45,14 @@ public class CommandHandler {
 	public Publisher<?> handle(MessageCreateEvent event, String[] words) {
 		if (words.length > 0) {
 			String keyword = words[0].trim().toLowerCase();
-			String[] args = new String[words.length - 1];
-			System.arraycopy(words, 1, args, 0, words.length - 1);
-			return this.commandRegistry.get(keyword).orElse(unknownCommand).handle(event, args);
+			Command cmd = this.commandRegistry.get(keyword).orElse(unknownCommand);
+			if (cmd.getWhitelistedUserIds() != null && !cmd.getWhitelistedUserIds().isEmpty()) {
+				Optional<User> optionalUser = event.getMessage().getAuthor();
+				if (!optionalUser.isPresent() || !cmd.getWhitelistedUserIds().contains(optionalUser.get().getId().asLong())) {
+					return event.getMessage().getChannel().flatMap(c -> c.createMessage("Command not permitted."));
+				}
+			}
+			return cmd.handle(event, Arrays.copyOfRange(words, 1, words.length));
 		}
 		return Mono.empty();
 	}

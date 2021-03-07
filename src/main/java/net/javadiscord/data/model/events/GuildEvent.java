@@ -1,8 +1,9 @@
-package net.javadiscord.data.model;
+package net.javadiscord.data.model.events;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import net.javadiscord.data.model.BaseEntity;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;

@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javadiscord.command.CommandRegistry;
 import net.javadiscord.command.HelpCommand;
+import net.javadiscord.command.analytics.CustomQueryCommand;
 import net.javadiscord.command.analytics.JoinCountCommand;
 import net.javadiscord.command.analytics.MessageCountCommand;
 import net.javadiscord.data.GuildEventRecorderService;
@@ -14,6 +15,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -24,19 +28,27 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class BotInitializer implements CommandLineRunner {
+	public static final Set<Long> ADMIN_IDS = new HashSet<>();
+
 	private final GuildEventRecorderService recorderService;
 	private final CommandRegistry commandRegistry;
 
 	// Autowired commands (which require persistence components)
 	private final MessageCountCommand messageCountCommand;
 	private final JoinCountCommand joinCountCommand;
-	//private final CustomQueryCommand customQueryCommand;
+	private final CustomQueryCommand customQueryCommand;
 
 	@Override
 	public void run(String... args) {
-		if (args.length < 1 || args[0].isEmpty()) throw new IllegalArgumentException("Missing client token argument.");
+		String token = System.getenv("INSIGHTS_BOT_TOKEN");
+		if (token == null || token.trim().isEmpty()) throw new IllegalArgumentException("Missing client token argument.");
+		ADMIN_IDS.addAll(Arrays.stream(System.getenv("INSIGHTS_BOT_ADMINS").split("\\s*,\\s*")).map(Long::parseLong).collect(Collectors.toSet()));
+		if (!ADMIN_IDS.isEmpty()) {
+			log.info("Started with admin ids: {}", ADMIN_IDS.toString());
+		}
 		this.initializeCommands();
-		this.initializeBot(args[0]);
+		log.info("Initialized commands.");
+		this.initializeBot(token);
 	}
 
 	/**
@@ -46,7 +58,7 @@ public class BotInitializer implements CommandLineRunner {
 		this.commandRegistry.register("help", new HelpCommand());
 		this.commandRegistry.register("messageCount", this.messageCountCommand);
 		this.commandRegistry.register("joinCount", this.joinCountCommand);
-		//this.commandRegistry.register("customQuery", this.customQueryCommand);
+		this.commandRegistry.register("customQuery", this.customQueryCommand);
 	}
 
 	/**

@@ -1,8 +1,10 @@
 package net.javadiscord.data;
 
 import discord4j.core.event.ReactiveEventAdapter;
+import discord4j.core.event.domain.guild.BanEvent;
 import discord4j.core.event.domain.guild.MemberJoinEvent;
 import discord4j.core.event.domain.guild.MemberLeaveEvent;
+import discord4j.core.event.domain.guild.UnbanEvent;
 import discord4j.core.event.domain.message.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +30,7 @@ public class GuildEventRecorderService extends ReactiveEventAdapter {
 	private final GuildEventRepository guildEventRepository;
 	private final CommandHandler commandHandler;
 
+	// ---- MESSAGE EVENTS ----
 	@Override
 	public Publisher<?> onMessageCreate(MessageCreateEvent event) {
 		if (event.getGuildId().isPresent() && event.getMember().isPresent()) {
@@ -72,6 +75,7 @@ public class GuildEventRecorderService extends ReactiveEventAdapter {
 		return Mono.empty();
 	}
 
+	// ---- MEMBERSHIP EVENTS
 	@Override
 	public Publisher<?> onMemberJoin(MemberJoinEvent event) {
 		return Mono.just(this.guildEventRepository.save(new MembershipEvent(event)));
@@ -79,6 +83,16 @@ public class GuildEventRecorderService extends ReactiveEventAdapter {
 
 	@Override
 	public Publisher<?> onMemberLeave(MemberLeaveEvent event) {
+		return Mono.just(this.guildEventRepository.save(new MembershipEvent(event)));
+	}
+
+	@Override
+	public Publisher<?> onBan(BanEvent event) {
+		return Mono.just(this.guildEventRepository.save(new MembershipEvent(event)));
+	}
+
+	@Override
+	public Publisher<?> onUnban(UnbanEvent event) {
 		return Mono.just(this.guildEventRepository.save(new MembershipEvent(event)));
 	}
 }

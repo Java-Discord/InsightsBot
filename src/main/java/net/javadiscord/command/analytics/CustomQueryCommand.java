@@ -3,12 +3,14 @@ package net.javadiscord.command.analytics;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.javadiscord.BotInitializer;
 import net.javadiscord.command.Command;
 import org.reactivestreams.Publisher;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
@@ -48,5 +50,10 @@ public class CustomQueryCommand implements Command {
 
 		String finalMsg = msg;
 		return event.getMessage().getChannel().flatMap(c -> c.createMessage(finalMsg));
+	}
+
+	@Override
+	public Set<Long> getWhitelistedUserIds() {
+		return BotInitializer.ADMIN_IDS;
 	}
 }
