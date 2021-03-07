@@ -14,7 +14,8 @@ For security reasons, the following properties must be declared as environment v
 
 | Environment Variable   | Description                                                  |
 | ---------------------- | ------------------------------------------------------------ |
-| `INSIGHTS_BOT_DB_URL`  | The JDBC URL used to access the data source, usually of the form `jdbc:<db_type>://<ip>:<port>/<db_name>`. |
+| `INSIGHTS_BOT_DB_URL`  | The JDBC URL used to access the data source.                 |
 | `INSIGHTS_BOT_DB_USER` | The user with which the bot will access the data source.     |
 | `INSIGHTS_BOT_DB_PASS` | The password for the above user.                             |
 | `INSIGHTS_BOT_TOKEN`   | The Discord Bot token to use for the bot.                    |
+| `INSIGHTS_BOT_ADMINS`  | (Optional) Comma-separated list of user ids for admin users. |
