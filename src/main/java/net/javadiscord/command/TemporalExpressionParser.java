@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 
 /**
@@ -18,8 +19,8 @@ public class TemporalExpressionParser {
 			return this.parse(args);
 		} catch (Exception e) {
 			return Pair.of(
-					LocalDateTime.now().minus(defaultBackRange).truncatedTo(ChronoUnit.SECONDS),
-					LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
+					LocalDateTime.now(ZoneOffset.UTC).minus(defaultBackRange).truncatedTo(ChronoUnit.SECONDS),
+					LocalDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.SECONDS)
 			);
 		}
 	}
@@ -30,8 +31,8 @@ public class TemporalExpressionParser {
 		}
 		long fromValue = Long.parseLong(args[0]);
 		ChronoUnit fromUnit = ChronoUnit.valueOf(args[1].trim().toUpperCase());
-		LocalDateTime from = LocalDateTime.now().plus(fromValue, fromUnit).truncatedTo(ChronoUnit.SECONDS);
-		LocalDateTime to = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+		LocalDateTime from = LocalDateTime.now(ZoneOffset.UTC).plus(fromValue, fromUnit).truncatedTo(ChronoUnit.SECONDS);
+		LocalDateTime to = LocalDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.SECONDS);
 		if (args.length < 4) {
 			return Pair.of(from, to);
 		}
