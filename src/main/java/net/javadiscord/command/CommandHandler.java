@@ -3,6 +3,7 @@ package net.javadiscord.command;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
@@ -17,9 +18,9 @@ import java.util.Optional;
  */
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class CommandHandler {
 	private final CommandRegistry commandRegistry;
-	private final UnknownCommand unknownCommand = new UnknownCommand();
 
 	/**
 	 * Handles a root-level command from which we must extract a keyword and
@@ -45,7 +46,7 @@ public class CommandHandler {
 	public Publisher<?> handle(MessageCreateEvent event, String[] words) {
 		if (words.length > 0) {
 			String keyword = words[0].trim().toLowerCase();
-			Command cmd = this.commandRegistry.get(keyword).orElse(unknownCommand);
+			Command cmd = this.commandRegistry.get(keyword);
 			if (cmd.getWhitelistedUserIds() != null && !cmd.getWhitelistedUserIds().isEmpty()) {
 				Optional<User> optionalUser = event.getMessage().getAuthor();
 				if (!optionalUser.isPresent() || !cmd.getWhitelistedUserIds().contains(optionalUser.get().getId().asLong())) {

@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class InsightsBot {
 	public static final String PREFIX = "!ib";
+	public static long STARTED_AT = System.currentTimeMillis();
 	/**
 	 * Starts the application.
 	 * <p>

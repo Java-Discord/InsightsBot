@@ -33,6 +33,12 @@ public class GuildEventRecorderService extends ReactiveEventAdapter {
 	// ---- MESSAGE EVENTS ----
 	@Override
 	public Publisher<?> onMessageCreate(MessageCreateEvent event) {
+		if (// Skip any messages sent by the bot itself.
+				event.getMessage().getAuthor().isPresent()
+				&& event.getMessage().getAuthor().get().getId().equals(event.getClient().getSelfId())
+		) {
+			return Mono.empty();
+		}
 		if (event.getGuildId().isPresent() && event.getMember().isPresent()) {
 			// Check if a command for the bot itself was issued, and process that instead.
 			if (event.getMessage().getContent().toLowerCase().startsWith(PREFIX)) {
@@ -53,7 +59,9 @@ public class GuildEventRecorderService extends ReactiveEventAdapter {
 
 	@Override
 	public Publisher<?> onMessageDelete(MessageDeleteEvent event) {
-		if (event.getGuildId().isPresent()) {
+		boolean isMe = event.getMessage().isPresent() && event.getMessage().get().getAuthor().isPresent()
+				&& event.getMessage().get().getAuthor().get().getId().equals(event.getClient().getSelfId());
+		if (event.getGuildId().isPresent() && !isMe) {
 			return Mono.just(this.guildEventRepository.save(new MessageEvent(event)));
 		}
 		return Mono.empty();
@@ -61,7 +69,7 @@ public class GuildEventRecorderService extends ReactiveEventAdapter {
 
 	@Override
 	public Publisher<?> onReactionAdd(ReactionAddEvent event) {
-		if (event.getGuildId().isPresent()) {
+		if (event.getGuildId().isPresent() && !event.getUserId().equals(event.getClient().getSelfId())) {
 			return Mono.just(this.guildEventRepository.save(new ReactionEvent(event)));
 		}
 		return Mono.empty();
@@ -69,7 +77,7 @@ public class GuildEventRecorderService extends ReactiveEventAdapter {
 
 	@Override
 	public Publisher<?> onReactionRemove(ReactionRemoveEvent event) {
-		if (event.getGuildId().isPresent()) {
+		if (event.getGuildId().isPresent() && !event.getUserId().equals(event.getClient().getSelfId())) {
 			return Mono.just(this.guildEventRepository.save(new ReactionEvent(event)));
 		}
 		return Mono.empty();

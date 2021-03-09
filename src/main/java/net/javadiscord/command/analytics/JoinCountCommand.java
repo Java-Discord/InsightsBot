@@ -3,6 +3,7 @@ package net.javadiscord.command.analytics;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import lombok.RequiredArgsConstructor;
 import net.javadiscord.command.TemporalExpressionParser;
+import net.javadiscord.util.Messages;
 import net.javadiscord.util.SqlHelper;
 import org.reactivestreams.Publisher;
 import org.springframework.data.util.Pair;
@@ -38,8 +39,9 @@ public class JoinCountCommand extends GuildSpecificCommand {
 			}
 			return null;
 		});
-		return event.getMessage().getChannel().flatMap(c -> c.createMessage(
-				String.format("%d members have joined this guild from %s to %s.", count, start, end)
-		));
+		return Messages.respondWithEmbed(event, spec -> {
+			spec.setTitle(count + " Members Joined");
+			spec.setDescription(String.format("Between %s and %s.", start, end));
+		});
 	}
 }

@@ -3,7 +3,6 @@ package net.javadiscord.command;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -12,17 +11,37 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Component
 public class CommandRegistry {
-	private final Map<String, Command> commandMap;
+	private final Map<String, CommandData> commandMap;
+	private final CommandData unknownCommandData = new CommandData(new UnknownCommand(), "Unknown command.");
 
 	public CommandRegistry() {
 		this.commandMap = new ConcurrentHashMap<>();
 	}
 
 	public void register(String keyword, Command command) {
-		this.commandMap.put(keyword.trim().toLowerCase(), command);
+		this.register(keyword, command, "A command.");
 	}
 
-	public Optional<Command> get(String keyword) {
-		return Optional.ofNullable(this.commandMap.get(keyword.toLowerCase()));
+	public void register(String keyword, Command command, String description) {
+		this.commandMap.put(keyword.trim().toLowerCase(), new CommandData(command, description));
+	}
+
+	public Command get(String keyword) {
+		return this.getData(keyword).getCommand();
+	}
+
+	public String getDescription(String keyword) {
+		return this.getData(keyword).getDescription();
+	}
+
+	public CommandData getData(String keyword) {
+		return this.commandMap.getOrDefault(keyword.toLowerCase(), this.unknownCommandData);
+	}
+
+	@Override
+	public String toString() {
+		return "CommandRegistry{" +
+				"commandMap=" + commandMap +
+				'}';
 	}
 }
