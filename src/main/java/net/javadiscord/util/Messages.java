@@ -5,6 +5,7 @@ import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.channel.MessageChannel;
 import discord4j.core.object.reaction.ReactionEmoji;
 import discord4j.core.spec.EmbedCreateSpec;
+import discord4j.rest.util.Color;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 
@@ -24,7 +25,10 @@ public class Messages {
 	}
 
 	public static Publisher<?> respondWithEmbed(MessageCreateEvent msgEvent, Consumer<EmbedCreateSpec> specConsumer) {
-		return respond(msgEvent, c -> c.createEmbed(specConsumer));
+		return respond(msgEvent, c -> c.createEmbed(spec -> {
+			spec.setColor(Color.of(47, 49, 54));
+			specConsumer.accept(spec);
+		}));
 	}
 
 	public static Publisher<?> warn(MessageCreateEvent msgEvent, String warningMessage) {

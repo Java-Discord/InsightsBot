@@ -6,17 +6,16 @@ import net.javadiscord.command.Command;
 import net.javadiscord.util.Messages;
 import org.reactivestreams.Publisher;
 
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
-
 public class Uptime implements Command {
 	@Override
 	public Publisher<?> handle(MessageCreateEvent event, String[] args) {
 		long uptimeMillis = System.currentTimeMillis() - InsightsBot.STARTED_AT;
-		Duration d = Duration.of(uptimeMillis, ChronoUnit.MILLIS);
+		long seconds = (uptimeMillis / 1000) % 60;
+		long minutes = (uptimeMillis / (1000 * 60)) % 60;
+		long hours = (uptimeMillis / (1000 * 60 * 60)) % 24;
 		String durationString = String.format(
 				"%d:%02d:%02d",
-				d.toHours(), d.toMinutes(), d.getSeconds()
+				hours, minutes, seconds
 		);
 		return Messages.respondWithEmbed(event, spec -> {
 			spec.setTitle("Uptime");
