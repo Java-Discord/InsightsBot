@@ -25,8 +25,7 @@ public class InsightsBot {
 	 *     all the necessary startup tasks, like registering commands and
 	 *     starting the Discord bot client.
 	 * </p>
-	 * @param args Command-line arguments. Should contain the bot's client token
-	 *             or an exception will be thrown and the application stops.
+	 * @param args Command-line arguments.
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(InsightsBot.class, args);
