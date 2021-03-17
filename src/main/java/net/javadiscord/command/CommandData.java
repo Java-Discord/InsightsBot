@@ -8,4 +8,5 @@ import lombok.Getter;
 public class CommandData {
 	private final Command command;
 	private final String description;
+	private final boolean adminOnly;
 }

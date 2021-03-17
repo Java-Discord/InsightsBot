@@ -3,17 +3,20 @@ package net.javadiscord.command.debug;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.javadiscord.command.AdminCommand;
+import net.javadiscord.command.Command;
 import org.reactivestreams.Publisher;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
+/**
+ * Runs a custom query that was provided via an SQL code block in a message.
+ */
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class CustomQueryCommand extends AdminCommand {
+public class CustomQueryCommand implements Command {
 	private final JdbcTemplate jdbcTemplate;
 
 	@Override

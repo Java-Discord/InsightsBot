@@ -14,6 +14,14 @@ import java.time.temporal.ChronoUnit;
  */
 @Component
 public class TemporalExpressionParser {
+	/**
+	 * Parses a start and end local date time from the given arguments, or gets
+	 * a default range if parsing failed.
+	 * @param args The arguments to parse.
+	 * @param defaultBackRange The default duration to use for a default range,
+	 *                         extending backwards from today.
+	 * @return A pair of start and end date time objects.
+	 */
 	public Pair<LocalDateTime, LocalDateTime> parse(String[] args, Duration defaultBackRange) {
 		try {
 			return this.parse(args);

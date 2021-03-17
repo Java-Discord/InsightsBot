@@ -9,7 +9,9 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Handles the process of preparing the contents of a command message for use
@@ -20,6 +22,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class CommandHandler {
+	public static final Set<Long> ADMIN_IDS = new HashSet<>();
 	private final CommandRegistry commandRegistry;
 
 	/**

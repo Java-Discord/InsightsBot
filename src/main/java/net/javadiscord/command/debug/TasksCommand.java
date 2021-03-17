@@ -2,7 +2,7 @@ package net.javadiscord.command.debug;
 
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import lombok.RequiredArgsConstructor;
-import net.javadiscord.command.AdminCommand;
+import net.javadiscord.command.Command;
 import net.javadiscord.util.Messages;
 import org.reactivestreams.Publisher;
 import org.springframework.scheduling.config.*;
@@ -12,9 +12,12 @@ import org.springframework.stereotype.Component;
 
 import java.time.Clock;
 
+/**
+ * Lists the currently scheduled tasks that this bot will perform.
+ */
 @Component
 @RequiredArgsConstructor
-public class Tasks extends AdminCommand {
+public class TasksCommand implements Command {
 	private final ScheduledTaskHolder taskHolder;
 
 	@Override

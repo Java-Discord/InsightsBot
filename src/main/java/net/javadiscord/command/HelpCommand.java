@@ -6,6 +6,8 @@ import net.javadiscord.InsightsBot;
 import net.javadiscord.util.Messages;
 import org.reactivestreams.Publisher;
 
+import java.util.List;
+
 /**
  * Simple command that displays a help message.
  */
@@ -20,22 +22,19 @@ public class HelpCommand implements Command {
 	public Publisher<?> handle(MessageCreateEvent event, String[] args) {
 		return Messages.respondWithEmbed(event, spec -> {
 			spec.setTitle("Help - Commands & More");
-			this.formatCommands(spec, "help", "messageCount", "joinCount", "getDailyAggregate");
 			boolean authorIsAdmin = event.getMessage().getAuthor().isPresent()
-					&& AdminCommand.isAdmin(event.getMessage().getAuthor().get().getId().asLong());
-			if (authorIsAdmin) {
-				this.formatCommands(spec, "tasks", "uptime", "customQuery");
-			}
-			long memUsage = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-			long memUsageMb = memUsage / (1024 * 1024);
-			spec.setFooter(String.format("Status: Memory usage: %dMB", memUsageMb), null);
+					&& CommandHandler.ADMIN_IDS.contains(event.getMessage().getAuthor().get().getId().asLong());
+			this.formatCommands(spec, authorIsAdmin);
 		});
 	}
 
-	private void formatCommands(EmbedCreateSpec spec, String... commands) {
+	private void formatCommands(EmbedCreateSpec spec, boolean authorIsAdmin) {
+		List<String> commands = this.registry.getCommands();
 		for (String command : commands) {
+			CommandData data = this.registry.getData(command);
+			if (data.isAdminOnly() && !authorIsAdmin) continue;
 			String usage = String.format("`%s %s`", InsightsBot.PREFIX, command);
-			spec.addField(usage, this.registry.getDescription(command), false);
+			spec.addField(usage, data.getDescription(), false);
 		}
 	}
 }

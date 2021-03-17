@@ -21,7 +21,7 @@ import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
-public class GetDailyAggregate implements Command {
+public class GetDailyAggregateCommand implements Command {
 	private final DailyAggregateGenerator dailyAggregateGenerator;
 	private final MessagesMetricRepository messagesMetricRepository;
 
