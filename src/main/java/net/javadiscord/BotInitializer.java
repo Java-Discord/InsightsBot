@@ -36,6 +36,8 @@ import static net.javadiscord.command.CommandHandler.ADMIN_IDS;
 public class BotInitializer implements CommandLineRunner {
 	private final GuildEventRecorderService recorderService;
 	private final CommandRegistry commandRegistry;
+
+	// Used for programmatically obtaining command beans.
 	private final ApplicationContext applicationContext;
 
 	@Override
@@ -57,11 +59,11 @@ public class BotInitializer implements CommandLineRunner {
 	private void initializeCommands() {
 		this.commandRegistry.register("help", new HelpCommand(this.commandRegistry), "Shows a list of commands.");
 		// Debug commands.
-		this.commandRegistry.register("status", this.getBeanCommand(StatusCommand.class), "Gets information about the status of the bot.");
+		this.commandRegistry.register("status", this.applicationContext.getBean(StatusCommand.class), "Gets information about the status of the bot.");
 		this.commandRegistry.register(
 				"tasks",
 				new CommandData(
-						this.getBeanCommand(TasksCommand.class),
+						this.applicationContext.getBean(TasksCommand.class),
 						"Gets a list of scheduled tasks the bot has planned.",
 						true
 				)
@@ -69,16 +71,16 @@ public class BotInitializer implements CommandLineRunner {
 		this.commandRegistry.register(
 				"customQuery",
 				new CommandData (
-						this.getBeanCommand(CustomQueryCommand.class),
+						this.applicationContext.getBean(CustomQueryCommand.class),
 						"Executes a custom SQL query on the database.",
 						true
 				)
 		);
 
 		// User-facing commands.
-		this.commandRegistry.register("messageCount", this.getBeanCommand(MessageCountCommand.class), "Gets the number of messages sent in a time interval.");
-		this.commandRegistry.register("joinCount", this.getBeanCommand(JoinCountCommand.class), "Gets the number of members that have joined in a time interval.");
-		this.commandRegistry.register("getDailyAggregate", this.getBeanCommand(GetDailyAggregateCommand.class), "Get aggregate data for a day.");
+		this.commandRegistry.register("messageCount", this.applicationContext.getBean(MessageCountCommand.class), "Gets the number of messages sent in a time interval.");
+		this.commandRegistry.register("joinCount", this.applicationContext.getBean(JoinCountCommand.class), "Gets the number of members that have joined in a time interval.");
+		this.commandRegistry.register("getDailyAggregate", this.applicationContext.getBean(GetDailyAggregateCommand.class), "Get aggregate data for a day.");
 
 	}
 
@@ -105,9 +107,5 @@ public class BotInitializer implements CommandLineRunner {
 		);
 		client.getEventDispatcher().on(this.recorderService).subscribe();
 		client.onDisconnect().block();
-	}
-
-	private Command getBeanCommand(Class<? extends Command> commandClass) {
-		return this.applicationContext.getBean(commandClass);
 	}
 }
