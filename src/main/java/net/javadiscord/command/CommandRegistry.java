@@ -1,7 +1,5 @@
 package net.javadiscord.command;
 
-import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,7 +9,6 @@ import java.util.stream.Collectors;
  * Registry that keeps track of a string-indexed map of commands. Each command
  * is registered with a lowercase keyword.
  */
-@Component
 public class CommandRegistry {
 	/**
 	 * The mapping of commands according to their names. Maps to a

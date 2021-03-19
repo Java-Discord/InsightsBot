@@ -6,7 +6,6 @@ import discord4j.core.event.domain.guild.MemberJoinEvent;
 import discord4j.core.event.domain.guild.MemberLeaveEvent;
 import discord4j.core.event.domain.guild.UnbanEvent;
 import discord4j.core.event.domain.message.*;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javadiscord.command.CommandHandler;
 import net.javadiscord.data.dao.GuildEventRepository;
@@ -14,7 +13,6 @@ import net.javadiscord.data.model.events.MembershipEvent;
 import net.javadiscord.data.model.events.MessageEvent;
 import net.javadiscord.data.model.events.ReactionEvent;
 import org.reactivestreams.Publisher;
-import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import static net.javadiscord.InsightsBot.PREFIX;
@@ -23,12 +21,15 @@ import static net.javadiscord.InsightsBot.PREFIX;
  * Service that is responsible for recording data about events, and is the main
  * event handler for the Discord bot.
  */
-@Service
 @Slf4j
-@RequiredArgsConstructor
 public class GuildEventRecorderService extends ReactiveEventAdapter {
 	private final GuildEventRepository guildEventRepository;
 	private final CommandHandler commandHandler;
+
+	public GuildEventRecorderService(GuildEventRepository guildEventRepository, CommandHandler commandHandler) {
+		this.guildEventRepository = guildEventRepository;
+		this.commandHandler = commandHandler;
+	}
 
 	// ---- MESSAGE EVENTS ----
 	@Override

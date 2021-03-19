@@ -3,19 +3,21 @@ package net.javadiscord;
 import discord4j.core.DiscordClientBuilder;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.object.entity.Guild;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.javadiscord.command.Command;
 import net.javadiscord.command.CommandData;
+import net.javadiscord.command.CommandHandler;
 import net.javadiscord.command.CommandRegistry;
 import net.javadiscord.command.HelpCommand;
 import net.javadiscord.command.analytics.GetDailyAggregateCommand;
+import net.javadiscord.command.analytics.GraphCommand;
 import net.javadiscord.command.analytics.JoinCountCommand;
 import net.javadiscord.command.analytics.MessageCountCommand;
 import net.javadiscord.command.debug.CustomQueryCommand;
 import net.javadiscord.command.debug.StatusCommand;
 import net.javadiscord.command.debug.TasksCommand;
 import net.javadiscord.data.GuildEventRecorderService;
+import net.javadiscord.data.dao.GuildEventRepository;
+import net.javadiscord.util.DiscordClientHolder;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -31,7 +33,6 @@ import static net.javadiscord.command.CommandHandler.ADMIN_IDS;
  * first command line argument.
  */
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class BotInitializer implements CommandLineRunner {
 	private final GuildEventRecorderService recorderService;
@@ -39,6 +40,12 @@ public class BotInitializer implements CommandLineRunner {
 
 	// Used for programmatically obtaining command beans.
 	private final ApplicationContext applicationContext;
+
+	public BotInitializer(ApplicationContext applicationContext, GuildEventRepository guildEventRepository) {
+		this.commandRegistry = new CommandRegistry();
+		this.applicationContext = applicationContext;
+		this.recorderService = new GuildEventRecorderService(guildEventRepository, new CommandHandler(this.commandRegistry));
+	}
 
 	@Override
 	public void run(String... args) {
@@ -81,7 +88,11 @@ public class BotInitializer implements CommandLineRunner {
 		this.commandRegistry.register("messageCount", this.applicationContext.getBean(MessageCountCommand.class), "Gets the number of messages sent in a time interval.");
 		this.commandRegistry.register("joinCount", this.applicationContext.getBean(JoinCountCommand.class), "Gets the number of members that have joined in a time interval.");
 		this.commandRegistry.register("getDailyAggregate", this.applicationContext.getBean(GetDailyAggregateCommand.class), "Get aggregate data for a day.");
-
+		this.commandRegistry.register(
+				"graph",
+				this.applicationContext.getBean(GraphCommand.class),
+				"Show visualizations of aggregate data."
+		);
 	}
 
 	/**
@@ -96,6 +107,7 @@ public class BotInitializer implements CommandLineRunner {
 		if (client == null) {
 			throw new RuntimeException("Could not build client and login.");
 		}
+		DiscordClientHolder.getInstance().setClient(client);
 		client.getSelf().subscribe(user -> log.info(
 				"Discord bot client obtained: {}#{}",
 				user.getUsername(),
