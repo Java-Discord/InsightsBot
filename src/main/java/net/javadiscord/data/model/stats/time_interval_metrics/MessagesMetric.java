@@ -29,4 +29,17 @@ public class MessagesMetric extends GuildTimeIntervalMetric {
 	public MessagesMetric(Long guildId, Instant startTimestamp, Instant endTimestamp) {
 		super(guildId, startTimestamp, endTimestamp);
 	}
+
+	@Override
+	public String toString() {
+		return "MessagesMetric{" +
+				"messagesCreated=" + messagesCreated +
+				", messagesDeleted=" + messagesDeleted +
+				", messagesUpdated=" + messagesUpdated +
+				", messagesRetained=" + messagesRetained +
+				", reactionsAdded=" + reactionsAdded +
+				", reactionsRemoved=" + reactionsRemoved +
+				", activeUsers=" + activeUsers +
+				'}';
+	}
 }

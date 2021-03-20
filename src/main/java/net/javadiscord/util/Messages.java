@@ -9,11 +9,8 @@ import discord4j.rest.util.Color;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -39,19 +36,6 @@ public class Messages {
 		return respond(msgEvent, c -> c.createEmbed(spec -> {
 			spec.setColor(EMBED_COLOR);
 			specConsumer.accept(spec);
-		}));
-	}
-
-	public static Publisher<?> respondWithImage(MessageCreateEvent msgEvent, BufferedImage image, String format, String name) {
-		return respond(msgEvent, c -> c.createMessage(spec -> {
-			ByteArrayOutputStream os = new ByteArrayOutputStream();
-			try {
-				ImageIO.write(image, format, os);
-				spec.addFile(name, new ByteArrayInputStream(os.toByteArray()));
-			} catch (IOException e) {
-				e.printStackTrace();
-				spec.setContent("Could not write image.");
-			}
 		}));
 	}
 

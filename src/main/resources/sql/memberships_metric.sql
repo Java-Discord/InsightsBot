@@ -25,7 +25,7 @@ SET @retained_count = (
 	AND ge.user_id NOT IN (
 		SELECT g2.user_id
 		FROM membership_events me2
-		LEFT JOIN guild_events g2 ON me2.id = g2.id
+		INNER JOIN guild_events g2 ON me2.id = g2.id
 		WHERE me2.event_type = 'LEAVE'
 		AND g2.timestamp >= @start AND g2.timestamp <= @end AND g2.user_id = ge.user_id AND g2.guild_id = ge.guild_id
 	)

@@ -20,7 +20,6 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -75,10 +74,14 @@ public class AggregateGenerator {
 	 */
 	@Transactional
 	public MessagesMetric generateMessagesMetric(long guildId, Instant start, Instant end, boolean overwrite) {
-		if (!overwrite) {
-			Optional<MessagesMetric> optionalMetric = this.messagesMetricRepository.findByGuildAndInterval(guildId, start, end);
-			if (optionalMetric.isPresent()) {
-				return optionalMetric.get();
+		List<MessagesMetric> existingMetrics = this.messagesMetricRepository.findByGuildAndInterval(guildId, start, end);
+		if (existingMetrics.size() > 0) {
+			if (overwrite) {
+				this.messagesMetricRepository.deleteAll(existingMetrics);
+			} else {
+				MessagesMetric latest = existingMetrics.remove(0);
+				this.messagesMetricRepository.deleteAll(existingMetrics);
+				return latest;
 			}
 		}
 		return this.intervalAggregationService.generateMessagesMetric(guildId, start, end);
@@ -92,10 +95,14 @@ public class AggregateGenerator {
 
 	@Transactional
 	public MembershipsMetric generateMembershipsMetric(long guildId, Instant start, Instant end, boolean overwrite) {
-		if (!overwrite) {
-			Optional<MembershipsMetric> optionalMetric = this.membershipsMetricRepository.findByGuildAndInterval(guildId, start, end);
-			if (optionalMetric.isPresent()) {
-				return optionalMetric.get();
+		List<MembershipsMetric> existingMetrics = this.membershipsMetricRepository.findByGuildAndInterval(guildId, start, end);
+		if (existingMetrics.size() > 0) {
+			if (overwrite) {
+				this.membershipsMetricRepository.deleteAll(existingMetrics);
+			} else {
+				MembershipsMetric latest = existingMetrics.remove(0);
+				this.membershipsMetricRepository.deleteAll(existingMetrics);
+				return latest;
 			}
 		}
 		return this.intervalAggregationService.generateMembershipsMetric(guildId, start, end);

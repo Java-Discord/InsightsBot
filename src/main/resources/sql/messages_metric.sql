@@ -30,9 +30,8 @@ SET @retained_count = (
       AND message_id NOT IN (
           SELECT me2.message_id
           FROM message_events me2
-          LEFT JOIN guild_events g2 ON me2.id = g2.id
+          INNER JOIN guild_events g2 ON me2.id = g2.id
           WHERE me2.event_type = 'DELETE'
-          AND g2.guild_id = ge.guild_id AND g2.timestamp >= @start AND g2.timestamp <= @end
       )
 );
 SET @reactions_added_count = (
