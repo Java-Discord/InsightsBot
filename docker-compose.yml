@@ -1,0 +1,28 @@
+version: "3.9"
+
+networks:
+  insights_bot_network:
+    driver: bridge
+
+volumes:
+  insights_db_data:
+    driver: local
+
+services:
+  db:
+    image: mariadb:10.5.9
+    container_name: insights_bot_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root_pw
+      MYSQL_USER: insights_bot_user
+      MYSQL_PASSWORD: user_pw
+      MYSQL_DATABASE: insights_bot
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - insights_db_data:/var/lib/mysql
+    networks:
+      - insights_bot_network

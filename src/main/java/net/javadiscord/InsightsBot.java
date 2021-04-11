@@ -8,13 +8,14 @@ import net.javadiscord.commands.CommandHandler;
 import net.javadiscord.commands.info.HelpCommand;
 import net.javadiscord.commands.info.StatusCommand;
 import net.javadiscord.commands.stats.ViewCurrentCacheCommand;
+import net.javadiscord.commands.util.FlushCacheCommand;
+import net.javadiscord.commands.util.ShutdownCommand;
+import net.javadiscord.data.DataSourceProvider;
+import net.javadiscord.data.JobManager;
 import net.javadiscord.listeners.InsightsEventListener;
-import net.javadiscord.model.CacheSaveJob;
 import net.javadiscord.model.GuildsCache;
-import org.quartz.*;
-import org.quartz.impl.StdSchedulerFactory;
 
-import javax.security.auth.login.LoginException;
+import javax.sql.DataSource;
 import java.awt.*;
 import java.time.Duration;
 import java.time.ZonedDateTime;
@@ -36,9 +37,13 @@ public class InsightsBot {
 	@Getter
 	private final CommandHandler commandHandler;
 	@Getter
+	private final JobManager jobManager;
+	@Getter
+	private final DataSource dataSource;
+	@Getter
 	private final JDA jda;
 
-	private InsightsBot(String token) throws InterruptedException, LoginException {
+	private InsightsBot(String token) throws Exception {
 		this.jda = JDABuilder.createLight(token)
 				.addEventListeners(new InsightsEventListener(this))
 				.build();
@@ -48,6 +53,9 @@ public class InsightsBot {
 		this.guildsCache = new GuildsCache();
 		this.commandHandler = new CommandHandler();
 		this.initializeCommands();
+		this.dataSource = new DataSourceProvider().getDataSource();
+		this.jobManager = new JobManager();
+		this.jobManager.initializeScheduledJobs();
 	}
 
 	public Duration getUptime() {
@@ -57,29 +65,19 @@ public class InsightsBot {
 	private void initializeCommands() {
 		this.commandHandler.getCommandRegistry()
 				.register("cache", new ViewCurrentCacheCommand())
+				.register("flush", new FlushCacheCommand())
 				.register("status", new StatusCommand())
-				.register("help", new HelpCommand());
+				.register("help", new HelpCommand())
+				.register("shutdown", new ShutdownCommand());
 	}
 
-	public static void main(String[] args) throws SchedulerException {
+	public static void main(String[] args) {
 		try {
 			instance = new InsightsBot(System.getenv("INSIGHTS_BOT_TOKEN"));
-		} catch (LoginException | InterruptedException e) {
+		} catch (Exception e) {
 			log.error("Could not login and start bot: {}", e.getMessage());
 			System.exit(1);
 		}
-		SchedulerFactory sf = new StdSchedulerFactory();
-		Scheduler scheduler = sf.getScheduler();
-		JobDetail job = JobBuilder.newJob(CacheSaveJob.class)
-				.withIdentity("cache_save", "cache")
-				.withDescription("Saves the current guild data caches to the database.")
-				.build();
-		Trigger trigger = TriggerBuilder.newTrigger()
-				.forJob(job)
-				.withSchedule(CronScheduleBuilder.cronSchedule("0 */1 * * * ?"))
-				.build();
-		scheduler.scheduleJob(job, trigger);
-		scheduler.start();
 	}
 
 	/**

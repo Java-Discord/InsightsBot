@@ -4,6 +4,7 @@ import lombok.Getter;
 import net.dv8tion.jda.api.events.guild.GenericGuildEvent;
 
 import java.time.ZonedDateTime;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,12 +33,20 @@ public class GuildsCache {
 		return this.get(guildEvent.getGuild().getIdLong());
 	}
 
+	public boolean exists(long guildId) {
+		return this.guildData.containsKey(guildId);
+	}
+
 	public void clear() {
 		this.guildData.clear();
 		this.lastClearedAt = ZonedDateTime.now();
 	}
 
 	public Set<Map.Entry<Long, GuildData>> getAll() {
-		return this.guildData.entrySet();
+		return new HashSet<>(this.guildData.entrySet());
+	}
+
+	public boolean isEmpty() {
+		return this.guildData.isEmpty();
 	}
 }
