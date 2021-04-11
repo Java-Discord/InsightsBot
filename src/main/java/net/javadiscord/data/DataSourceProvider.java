@@ -10,7 +10,8 @@ import java.sql.SQLException;
  */
 public class DataSourceProvider {
 	public DataSource getDataSource() throws SQLException {
-		MariaDbDataSource ds = new MariaDbDataSource(System.getenv("INSIGHTS_BOT_DB_URL"));
+		String url = System.getenv("INSIGHTS_BOT_DB_URL") + "?useUnicode=yes&characterEncoding=UTF-8";
+		MariaDbDataSource ds = new MariaDbDataSource(url);
 		ds.setUserName(System.getenv("INSIGHTS_BOT_DB_USER"));
 		ds.setPassword(System.getenv("INSIGHTS_BOT_DB_PASS"));
 		return ds;

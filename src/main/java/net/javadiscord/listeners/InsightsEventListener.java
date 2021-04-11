@@ -57,7 +57,12 @@ public class InsightsEventListener extends ListenerAdapter {
 		if (event.getUser().getIdLong() == bot.getSelfId() || event.getUser().isBot()) {
 			return;
 		}
-		bot.getGuildsCache().get(event).incrementReactionsAdded();
+		GuildData data = bot.getGuildsCache().get(event);
+		data.incrementReactionsAdded();
+		if (event.getReactionEmote().isEmoji()) {
+			data.incrementEmojiCount(event.getReactionEmote().getAsReactionCode());
+			System.out.println("Reaction code: " + event.getReactionEmote().getName());
+		}
 	}
 
 	@Override

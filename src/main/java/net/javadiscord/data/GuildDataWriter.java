@@ -39,14 +39,29 @@ public class GuildDataWriter {
 			throw new SQLException("Inserting data failed; no key generated.");
 		}
 		long dataId = generatedKeys.getLong(1);
-		PreparedStatement userMessageCountInsert = connection.prepareStatement(
+		this.writeUserMessageCounts(data, dataId);
+		this.writeEmojiCounts(data, dataId);
+	}
+
+	private void writeUserMessageCounts(GuildData data, long dataId) throws SQLException {
+		PreparedStatement stmt = connection.prepareStatement(
 				SqlHelper.load("sql/insert_guild_data_user_message_counts.sql")
 		);
 		for (Map.Entry<Long, Integer> userEntry : data.getUserMessageCounts().entrySet()) {
-			userMessageCountInsert.setLong(1, dataId);
-			userMessageCountInsert.setLong(2, userEntry.getKey());
-			userMessageCountInsert.setInt(3, userEntry.getValue());
-			userMessageCountInsert.executeUpdate();
+			stmt.setLong(1, dataId);
+			stmt.setLong(2, userEntry.getKey());
+			stmt.setInt(3, userEntry.getValue());
+			stmt.executeUpdate();
+		}
+	}
+
+	private void writeEmojiCounts(GuildData data, long dataId) throws SQLException {
+		PreparedStatement stmt = connection.prepareStatement(SqlHelper.load("sql/insert_guild_data_reaction_counts.sql"));
+		for (Map.Entry<String, Integer> entry : data.getEmojiCounts().entrySet()) {
+			stmt.setLong(1, dataId);
+			stmt.setString(2, entry.getKey());
+			stmt.setInt(3, entry.getValue());
+			stmt.executeUpdate();
 		}
 	}
 

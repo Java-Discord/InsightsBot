@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS guild_data_user_message_counts;
+DROP TABLE IF EXISTS guild_data_reaction_counts;
 DROP TABLE IF EXISTS guild_data;
 
 CREATE TABLE guild_data (
@@ -22,15 +23,22 @@ CREATE TABLE guild_data (
 
     CONSTRAINT period_check CHECK (period_start < period_end),
     CONSTRAINT guild_period_unique UNIQUE (period_start, period_end, guild_id)
-);
+) CHAR SET utf8, COLLATE utf8_bin;
 
 CREATE TABLE guild_data_user_message_counts (
     data_id BIGINT UNSIGNED NOT NULL,
     user_id BIGINT UNSIGNED NOT NULL,
     PRIMARY KEY (data_id, user_id),
-
     message_count MEDIUMINT UNSIGNED NOT NULL DEFAULT 0,
-
-    CONSTRAINT data_fk FOREIGN KEY (data_id) REFERENCES guild_data(id)
+    CONSTRAINT user_message_counts_data_fk FOREIGN KEY (data_id) REFERENCES guild_data(id)
         ON UPDATE CASCADE ON DELETE CASCADE
-);
+) CHAR SET utf8, COLLATE utf8_bin;
+
+CREATE TABLE guild_data_reaction_counts (
+    data_id BIGINT UNSIGNED NOT NULL,
+    reaction VARCHAR(255) NOT NULL,
+    PRIMARY KEY (data_id, reaction),
+    reaction_count MEDIUMINT UNSIGNED NOT NULL DEFAULT 0,
+    CONSTRAINT reaction_counts_data_fk FOREIGN KEY (data_id) REFERENCES guild_data(id)
+        ON UPDATE CASCADE ON DELETE CASCADE
+) CHAR SET utf8mb4, COLLATE utf8mb4_bin;

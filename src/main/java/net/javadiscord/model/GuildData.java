@@ -24,6 +24,7 @@ public class GuildData {
 	private int membersUnbanned;
 
 	private final Map<Long, Integer> userMessageCounts = new ConcurrentHashMap<>();
+	private final Map<String, Integer> emojiCounts = new ConcurrentHashMap<>();
 
 	public void incrementMessagesCreated() {
 		this.messagesCreated++;
@@ -63,8 +64,17 @@ public class GuildData {
 
 	public void incrementUserMessageCount(long userId) {
 		if (!this.userMessageCounts.containsKey(userId)) {
-			this.userMessageCounts.put(userId, 0);
+			this.userMessageCounts.put(userId, 1);
+		} else {
+			this.userMessageCounts.put(userId, this.userMessageCounts.get(userId) + 1);
 		}
-		this.userMessageCounts.put(userId, this.userMessageCounts.get(userId) + 1);
+	}
+
+	public void incrementEmojiCount(String emoji) {
+		if (!this.emojiCounts.containsKey(emoji)) {
+			this.emojiCounts.put(emoji, 1);
+		} else {
+			this.emojiCounts.put(emoji, this.emojiCounts.get(emoji) + 1);
+		}
 	}
 }
