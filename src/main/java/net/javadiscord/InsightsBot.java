@@ -7,8 +7,7 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.javadiscord.commands.CommandHandler;
 import net.javadiscord.commands.info.HelpCommand;
 import net.javadiscord.commands.info.StatusCommand;
-import net.javadiscord.commands.stats.ViewCurrentCacheCommand;
-import net.javadiscord.commands.util.FlushCacheCommand;
+import net.javadiscord.commands.stats.CacheCommand;
 import net.javadiscord.commands.util.ShutdownCommand;
 import net.javadiscord.data.DataSourceProvider;
 import net.javadiscord.data.JobManager;
@@ -64,8 +63,7 @@ public class InsightsBot {
 
 	private void initializeCommands() {
 		this.commandHandler.getCommandRegistry()
-				.register("cache", new ViewCurrentCacheCommand())
-				.register("flush", new FlushCacheCommand())
+				.register("cache", new CacheCommand())
 				.register("status", new StatusCommand())
 				.register("help", new HelpCommand())
 				.register("shutdown", new ShutdownCommand());

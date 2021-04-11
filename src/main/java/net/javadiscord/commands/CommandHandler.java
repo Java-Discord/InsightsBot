@@ -20,7 +20,7 @@ public class CommandHandler {
 		return message.getContentRaw().toLowerCase().startsWith(this.getPrefixForGuild(message.getGuild()));
 	}
 
-	private String getPrefixForGuild(Guild guild) {
+	public String getPrefixForGuild(Guild guild) {
 		return DEFAULT_PREFIX;
 	}
 

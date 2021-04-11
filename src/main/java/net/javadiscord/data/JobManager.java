@@ -24,7 +24,7 @@ public class JobManager {
 				.build();
 		Trigger trigger = TriggerBuilder.newTrigger()
 				.forJob(job)
-				.withSchedule(CronScheduleBuilder.cronSchedule("0 */1 * * * ?"))
+				.withSchedule(CronScheduleBuilder.cronSchedule("0 */10 * * * ?"))
 				.build();
 		scheduler.scheduleJob(job, trigger);
 		scheduler.start();
