@@ -61,7 +61,6 @@ public class InsightsEventListener extends ListenerAdapter {
 		data.incrementReactionsAdded();
 		if (event.getReactionEmote().isEmoji()) {
 			data.incrementEmojiCount(event.getReactionEmote().getAsReactionCode());
-			System.out.println("Reaction code: " + event.getReactionEmote().getName());
 		}
 	}
 
