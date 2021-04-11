@@ -1,8 +1,14 @@
-package net.javadiscord.data;
+package net.javadiscord.data.jobs;
 
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
+
+import java.text.ParseException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Date;
 
 /**
  * Manages the initialization and impromptu running of various jobs through a
@@ -17,16 +23,20 @@ public class JobManager {
 		this.scheduler = sf.getScheduler();
 	}
 
-	public void initializeScheduledJobs() throws SchedulerException {
+	public void initializeScheduledJobs() throws SchedulerException, ParseException {
 		JobDetail job = JobBuilder.newJob(FullCacheFlushJob.class)
-				.withIdentity("cache_save", "cache")
+				.withIdentity("full_cache_flush", "cache")
 				.withDescription("Saves the current guild data caches to the database.")
 				.build();
-		Trigger trigger = TriggerBuilder.newTrigger()
-				.forJob(job)
-				.withSchedule(CronScheduleBuilder.cronSchedule("0 */10 * * * ?"))
+		CronExpression expr = new CronExpression("1 0 0 * * ? *");
+		Trigger cronTrigger = TriggerBuilder.newTrigger()
+				.withIdentity("nightly")
+				.withDescription("Triggers every night.")
+				.withSchedule(CronScheduleBuilder.cronSchedule(expr))
 				.build();
-		scheduler.scheduleJob(job, trigger);
+		ZonedDateTime nextFireTime = expr.getNextValidTimeAfter(Date.from(Instant.now())).toInstant().atZone(ZoneId.systemDefault());
+		log.info("Initialized nightly full cache flush. Fires next at {}.", nextFireTime);
+		scheduler.scheduleJob(job, cronTrigger);
 		scheduler.start();
 	}
 

@@ -2,6 +2,7 @@ package net.javadiscord.model;
 
 import lombok.Getter;
 
+import java.time.LocalDate;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -11,6 +12,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Getter
 public class GuildData {
+	private final LocalDate date;
+
 	private int messagesCreated;
 	private int messagesUpdated;
 	private int messagesRemoved;
@@ -22,9 +25,14 @@ public class GuildData {
 	private int membersLeft;
 	private int membersBanned;
 	private int membersUnbanned;
+	private int memberCount;
 
 	private final Map<Long, Integer> userMessageCounts = new ConcurrentHashMap<>();
 	private final Map<String, Integer> emojiCounts = new ConcurrentHashMap<>();
+
+	public GuildData() {
+		this.date = LocalDate.now();
+	}
 
 	public void incrementMessagesCreated() {
 		this.messagesCreated++;
@@ -60,6 +68,10 @@ public class GuildData {
 
 	public void incrementMembersUnbanned() {
 		this.membersUnbanned++;
+	}
+
+	public void setMemberCount(int count) {
+		this.memberCount = count;
 	}
 
 	public void incrementUserMessageCount(long userId) {

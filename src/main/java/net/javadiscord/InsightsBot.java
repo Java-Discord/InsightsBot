@@ -8,9 +8,10 @@ import net.javadiscord.commands.CommandHandler;
 import net.javadiscord.commands.info.HelpCommand;
 import net.javadiscord.commands.info.StatusCommand;
 import net.javadiscord.commands.stats.CacheCommand;
+import net.javadiscord.commands.stats.GraphCommand;
 import net.javadiscord.commands.util.ShutdownCommand;
 import net.javadiscord.data.DataSourceProvider;
-import net.javadiscord.data.JobManager;
+import net.javadiscord.data.jobs.JobManager;
 import net.javadiscord.listeners.InsightsEventListener;
 import net.javadiscord.model.GuildsCache;
 
@@ -66,7 +67,8 @@ public class InsightsBot {
 				.register("cache", new CacheCommand())
 				.register("status", new StatusCommand())
 				.register("help", new HelpCommand())
-				.register("shutdown", new ShutdownCommand());
+				.register("shutdown", new ShutdownCommand())
+				.register("graph", new GraphCommand());
 	}
 
 	public static void main(String[] args) {

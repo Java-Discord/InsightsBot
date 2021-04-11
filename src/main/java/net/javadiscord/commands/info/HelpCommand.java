@@ -16,6 +16,7 @@ public class HelpCommand implements Command {
 				.addField(this.formatCommand("help", message), "Shows this message.", false)
 				.addField(this.formatCommand("status", message), "Shows the status of this bot.", false)
 				.addField(this.formatCommand("cache [flush]", message), "View cached data for this guild, or flush it to the database, if **flush** argument is given.", false)
+				.addField(this.formatCommand("graph <list|messages|active-users|members> [start] [end]", message), "Generate graphs for saved data. Optional start and end can be specified as number of days before today.", false)
 				.build()
 		).queue();
 	}

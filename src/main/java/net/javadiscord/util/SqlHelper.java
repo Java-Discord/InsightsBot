@@ -7,20 +7,26 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class SqlHelper {
+	private static final Map<String, String> queryCache = new ConcurrentHashMap<>(1);
+
 	public static String load(String resourceName) {
-		InputStream is = SqlHelper.class.getClassLoader().getResourceAsStream(resourceName);
-		if (is == null) {
-			return null;
-		}
-		try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
-			return br.lines().collect(Collectors.joining("\n"));
-		} catch (IOException e) {
-			return null;
-		}
+		return queryCache.computeIfAbsent(resourceName, s -> {
+			InputStream is = SqlHelper.class.getClassLoader().getResourceAsStream(resourceName);
+			if (is == null) {
+				return null;
+			}
+			try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+				return br.lines().collect(Collectors.joining("\n"));
+			} catch (IOException e) {
+				return null;
+			}
+		});
 	}
 
 	public static PreparedStatement loadMulti(Connection connection, String resourceName, String... params) throws SQLException {

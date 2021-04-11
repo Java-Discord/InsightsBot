@@ -1,13 +1,17 @@
-package net.javadiscord.data;
+package net.javadiscord.data.jobs;
 
 import lombok.extern.slf4j.Slf4j;
 import net.javadiscord.InsightsBot;
+import net.javadiscord.data.GuildDataWriter;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 
 import java.sql.SQLException;
-import java.time.ZonedDateTime;
 
+/**
+ * Job to flush a single guild's cache, where the guild id is provided by the
+ * job data map.
+ */
 @Slf4j
 public class GuildCacheFlushJob implements Job {
 	@Override
@@ -18,11 +22,8 @@ public class GuildCacheFlushJob implements Job {
 			log.warn("No cached data for guild, exiting.");
 			return;
 		}
-		try {
-			GuildDataWriter writer = new GuildDataWriter(InsightsBot.get().getDataSource().getConnection());
-			ZonedDateTime start = InsightsBot.get().getGuildsCache().getLastClearedAt();
-			ZonedDateTime end = ZonedDateTime.now();
-			writer.saveGuildData(guildId, InsightsBot.get().getGuildsCache().get(guildId), start, end);
+		try (GuildDataWriter writer = new GuildDataWriter()) {
+			writer.saveGuildData(guildId, InsightsBot.get().getGuildsCache().get(guildId));
 		} catch (SQLException e) {
 			log.error("Could not flush guild's cache.", e);
 		}

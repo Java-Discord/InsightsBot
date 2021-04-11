@@ -1,7 +1,6 @@
 INSERT INTO guild_data
 (
-    period_start,
-    period_end,
+    `date`,
     guild_id,
     messages_created,
     messages_updated,
@@ -11,5 +10,6 @@ INSERT INTO guild_data
     members_joined,
     members_left,
     members_banned,
-    members_unbanned
+    members_unbanned,
+    member_count
 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);

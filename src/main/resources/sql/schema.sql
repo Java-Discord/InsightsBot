@@ -4,8 +4,7 @@ DROP TABLE IF EXISTS guild_data;
 
 CREATE TABLE guild_data (
     id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    period_start DATETIME(0) NOT NULL COMMENT 'Timestamp for the start of the data period.',
-    period_end DATETIME(0) NOT NULL COMMENT 'Timestamp for the end of the data period.',
+    `date` DATE NOT NULL DEFAULT CURRENT_DATE() COMMENT 'The date that the data applies to.',
     guild_id BIGINT UNSIGNED NOT NULL,
 
     # Data columns
@@ -20,9 +19,9 @@ CREATE TABLE guild_data (
     members_left MEDIUMINT UNSIGNED NOT NULL DEFAULT 0,
     members_banned MEDIUMINT UNSIGNED NOT NULL DEFAULT 0,
     members_unbanned MEDIUMINT UNSIGNED NOT NULL DEFAULT 0,
+    member_count MEDIUMINT UNSIGNED NOT NULL DEFAULT 0,
 
-    CONSTRAINT period_check CHECK (period_start < period_end),
-    CONSTRAINT guild_period_unique UNIQUE (period_start, period_end, guild_id)
+    CONSTRAINT guild_period_unique UNIQUE (`date`, guild_id)
 ) CHAR SET utf8, COLLATE utf8_bin;
 
 CREATE TABLE guild_data_user_message_counts (
