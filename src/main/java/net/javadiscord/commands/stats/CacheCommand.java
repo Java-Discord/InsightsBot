@@ -3,17 +3,26 @@ package net.javadiscord.commands.stats;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.User;
 import net.javadiscord.InsightsBot;
 import net.javadiscord.commands.Command;
 import net.javadiscord.model.GuildData;
 import org.quartz.SchedulerException;
 
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
+/**
+ * A command for interacting with the bot's internal cache of data for a guild.
+ *
+ * <p>
+ *     Offers the following functionalities:
+ *     <ul>
+ *         <li>Without any additional arguments, shows the current cache data
+ *         for the guild.</li>
+ *         <li>The <code>flush</code> sub-command will flush all cached data for
+ *         the guild into the database, thus making it available for queries.</li>
+ *     </ul>
+ * </p>
+ */
 @Slf4j
 public class CacheCommand implements Command {
 	@Override
@@ -25,18 +34,15 @@ public class CacheCommand implements Command {
 		}
 	}
 
+	/**
+	 * Invoked when a user requests to see the current cache data for their guild.
+	 * @param message The message which triggered this command.
+	 */
 	private void view(Message message) {
 		String timeString = InsightsBot.get().getGuildsCache().getLastClearedAt().format(
 				DateTimeFormatter.ofPattern("d MMMM, yyyy, HH:mm:ss v")
 		);
 		GuildData data = InsightsBot.get().getGuildsCache().get(message.getGuild().getIdLong());
-		List<String> userMessageCountStrings = new ArrayList<>(data.getUserMessageCounts().size());
-		for (Map.Entry<Long, Integer> entry : data.getUserMessageCounts().entrySet()) {
-			User user = message.getJDA().retrieveUserById(entry.getKey()).complete();
-			if (user != null) {
-				userMessageCountStrings.add('*' + user.getAsTag() + "*: `" + entry.getValue() + "`");
-			}
-		}
 		message.reply(new EmbedBuilder()
 				.setTitle("Current Cached Guild Statistics")
 				.addField("Messages Created", Integer.toString(data.getMessagesCreated()), true)
@@ -48,12 +54,15 @@ public class CacheCommand implements Command {
 				.addField("Members Left", Integer.toString(data.getMembersLeft()), true)
 				.addField("Members Banned", Integer.toString(data.getMembersBanned()), true)
 				.addField("Members Unbanned", Integer.toString(data.getMembersUnbanned()), true)
-				.addField("User Message Counts", String.join(", ", userMessageCountStrings), false)
 				.setFooter("Since " + timeString)
 				.build()
 		).queue();
 	}
 
+	/**
+	 * Invoked when a user requests to flush current cache data to the database.
+	 * @param message The message which triggered this command.
+	 */
 	private void flush(Message message) {
 		if (!InsightsBot.get().getGuildsCache().exists(message.getGuild().getIdLong())) {
 			message.reply("There is no cached data to flush.").queue();

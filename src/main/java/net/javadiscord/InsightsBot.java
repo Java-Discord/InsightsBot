@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.javadiscord.commands.CommandHandler;
 import net.javadiscord.commands.info.HelpCommand;
 import net.javadiscord.commands.info.StatusCommand;
@@ -26,25 +27,71 @@ import java.time.ZonedDateTime;
  */
 @Slf4j
 public class InsightsBot {
+	/**
+	 * The color that is used for embed messages created by this bot.
+	 */
 	public static final Color EMBED_COLOR = new Color(47, 49, 54);
+
+	/**
+	 * The singleton instance of the bot.
+	 */
 	private static InsightsBot instance;
 
+	/**
+	 * The date and time at which this bot started.
+	 */
 	private final ZonedDateTime startedAt;
+
+	/**
+	 * This bot's own id.
+	 */
 	@Getter
 	private final long selfId;
+
+	/**
+	 * The bot's cache of all guild data.
+	 */
 	@Getter
 	private final GuildsCache guildsCache;
+
+	/**
+	 * The bot's command handler, which is responsible for holding registered
+	 * commands and dispatching responses.
+	 */
 	@Getter
 	private final CommandHandler commandHandler;
+
+	/**
+	 * The manager for all scheduled and impromptu Quartz-scheduled jobs.
+	 */
 	@Getter
 	private final JobManager jobManager;
+
+	/**
+	 * The data source that this bot uses for persistence of cache data.
+	 */
 	@Getter
 	private final DataSource dataSource;
+
+	/**
+	 * The JDA bot instance.
+	 */
 	@Getter
 	private final JDA jda;
 
+	/**
+	 * Constructs the bot using the given access token.
+	 * @param token The token to use to connect to Discord.
+	 * @throws Exception If any startup method fails.
+	 */
 	private InsightsBot(String token) throws Exception {
 		this.jda = JDABuilder.createLight(token)
+				.enableIntents(
+						GatewayIntent.GUILD_MEMBERS,
+						GatewayIntent.GUILD_MESSAGES,
+						GatewayIntent.GUILD_BANS,
+						GatewayIntent.GUILD_MESSAGE_REACTIONS
+				)
 				.addEventListeners(new InsightsEventListener(this))
 				.build();
 		this.jda.awaitReady();
@@ -58,10 +105,16 @@ public class InsightsBot {
 		this.jobManager.initializeScheduledJobs();
 	}
 
+	/**
+	 * @return The amount of time that this bot has been alive since it started.
+	 */
 	public Duration getUptime() {
 		return Duration.between(this.startedAt, ZonedDateTime.now());
 	}
 
+	/**
+	 * Initializes the bot's command handler with a registry of commands.
+	 */
 	private void initializeCommands() {
 		this.commandHandler.getCommandRegistry()
 				.register("cache", new CacheCommand())
@@ -71,6 +124,11 @@ public class InsightsBot {
 				.register("graph", new GraphCommand());
 	}
 
+	/**
+	 * The main method where the bot is started from.
+	 * @param args Command line arguments. No arguments are used; all parameters
+	 *             are passed via environment variables instead.
+	 */
 	public static void main(String[] args) {
 		try {
 			instance = new InsightsBot(System.getenv("INSIGHTS_BOT_TOKEN"));

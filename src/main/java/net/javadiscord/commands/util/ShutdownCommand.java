@@ -6,6 +6,9 @@ import net.javadiscord.InsightsBot;
 import net.javadiscord.commands.Command;
 import net.javadiscord.util.AdminChecker;
 
+/**
+ * Special command to shut down the bot. Only admins may use it.
+ */
 @Slf4j
 public class ShutdownCommand implements Command {
 	@Override

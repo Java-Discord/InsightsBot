@@ -7,7 +7,6 @@ import net.javadiscord.util.SqlHelper;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeries;
@@ -21,6 +20,11 @@ import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.*;
 
+/**
+ * The main logical component in generating graphical representations of stored
+ * data.
+ * TODO: Clean this up a lot, separate data fetching and graph building.
+ */
 @Slf4j
 public class SimpleValueGraphGenerator {
 

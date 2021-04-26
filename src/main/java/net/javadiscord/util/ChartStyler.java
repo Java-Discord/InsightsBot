@@ -15,11 +15,12 @@ public class ChartStyler {
 	@Getter
 	private static final ChartStyler instance = new ChartStyler();
 
-	public ChartStyler() {
-	}
-
+	/**
+	 * Styles an XY-Plot chart using the custom fonts and color choices.
+	 * @param chart The chart to style.
+	 */
 	public void style(JFreeChart chart) {
-		final Font uniSansHeavy = loadFont("font/UniSansHeavy.ttf");;
+		final Font uniSansHeavy = loadFont("font/UniSansHeavy.ttf");
 		final Font uniSansHeavyItalic = loadFont("font/UniSansHeavyItalic.ttf");
 		final Font uniSansThin = loadFont("font/UniSansThin.ttf");
 		final Font uniSansThinItalic = loadFont("font/UniSansThinItalic.ttf");
@@ -38,6 +39,11 @@ public class ChartStyler {
 		}
 	}
 
+	/**
+	 * Simple utility method to load a TTF font from a classpath resource.
+	 * @param resourceName The name of the font file.
+	 * @return The font that was loaded.
+	 */
 	private Font loadFont(String resourceName) {
 		InputStream is = ChartStyler.class.getClassLoader().getResourceAsStream(resourceName);
 		if (is == null) {

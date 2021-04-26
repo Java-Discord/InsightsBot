@@ -11,6 +11,10 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
+/**
+ * The main command for rendering data in graphs and charts.
+ * TODO: Split up graph types and specialty graphs.
+ */
 @Slf4j
 public class GraphCommand implements Command {
 	private static final String[] AVAILABLE_GRAPHS = {
